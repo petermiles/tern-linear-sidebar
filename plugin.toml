@@ -1,0 +1,13 @@
+schema = 1
+id = "linear-sidebar"
+name = "Linear Sidebar"
+version = "0.1.0"
+description = "Open Linear issue links in a read-only sidebar beside the pane where you clicked them."
+icon = "link"
+host = "host.luau"
+window = "window.luau"
+
+[[blocks]]
+id = "view"
+title = "Linear issue"
+icon = "link"
