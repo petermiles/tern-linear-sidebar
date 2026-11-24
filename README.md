@@ -30,7 +30,7 @@ link re-points the same sidebar instead of opening a second one.
   routes (for example a GitHub sidebar plugin) like any clicked link.
 - Each tab has one sidebar slot, shared with the companion
   [`github-sidebar`](https://github.com/petermiles/tern-github-sidebar) plugin: a Linear click takes over a
-  GitHub sidebar in place and vice versa.
+  GitHub sidebar in place (including the browser it docks when `gh` is unavailable) and vice versa.
 
 ## Setup
 

@@ -35,22 +35,39 @@ local function track(owner: number, block: number?)
 	tern.kv.set(BROWSERS_KEY, map)
 end
 
+-- The GitHub plugin docks a plain browser on a pull request page where its block was when `gh` is not
+-- available; that browser holds the sidebar slot too.
+local function isGithubFallback(info: any): boolean
+	return info.kind == "browser"
+		and type(info.url) == "string"
+		and string.sub(info.url, 1, 19) == "https://github.com/"
+		and string.find(info.url, "/pull/", 1, true) ~= nil
+end
+
 local function slotIn(cx: any, pane: number): any?
 	local tab = cx.session:tab_of(pane)
 	if tab == nil then
 		return nil
 	end
 	local found: any? = nil
+	local fallback: any? = nil
 	for _, info in cx.session:panes() do
-		if info.tab == tab and info.kind == "plugin" and (info.block == THIS or info.block == OTHER) then
-			-- The pane that held the click wins when it is itself a sidebar.
-			if info.pane == pane then
-				return info
+		if info.tab == tab then
+			local isBlock = info.kind == "plugin" and (info.block == THIS or info.block == OTHER)
+			if isBlock or isGithubFallback(info) then
+				-- The pane that held the click wins when it is itself a sidebar.
+				if info.pane == pane then
+					return info
+				end
+				if isBlock then
+					found = found or info
+				else
+					fallback = fallback or info
+				end
 			end
-			found = found or info
 		end
 	end
-	return found
+	return found or fallback
 end
 
 local function claim(req: any, cx: any): any?
